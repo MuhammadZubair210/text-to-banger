@@ -14,16 +14,19 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 def get_boring_versions(tweet):
     """Function that uses OpenAI's GPT-3 to generate boring versions of a given tweet."""
     boring_versions = []
-    banger_opposites = ["an opposite sentiment", "a boring", "a short and non-viral"]
+    banger_opposites_prompts = ["Write an original tweet loosely related to the topic of the following tweet",
+                                "Write a boring tweet related to the topic of the following tweet",
+                                "Write a short tweet related to the topic of the following tweet"]
     
     try:
-        for opposite in banger_opposites:
+        for opposite_prompt in banger_opposites_prompts:
             # Make a call to the OpenAI API
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": f"Transform this viral tweet into {opposite} version: '{tweet}'"}
+                    {"role": "system", "content": "You are a helpful assistant in charge of writing new tweets. " \
+                                                  "You only reply through tweets."},
+                    {"role": "user", "content": f"{opposite_prompt}: '{tweet}'"}
                 ])
             
             # Get the boring version from the response
